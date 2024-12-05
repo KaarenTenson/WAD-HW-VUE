@@ -2,7 +2,7 @@
     <div>
         <h3>{{ProfileInfo.name}}</h3>
         <p>Email: {{ProfileInfo.mail}}</p>
-        <a href="Login.html" ><strong>Logout</strong></a>
+        <button @click="LogOut">Logout</button>
     </div>
 
 </template> 
@@ -23,6 +23,11 @@ computed: {
   },
 },
 methods: {
+    LogOut() {
+        this.$store.dispatch("LogOutAct", { // Currently null, will add image functionality in future
+        });
+        this.$router.push('/Login');
+    }
 },
 }
 </script>
@@ -48,10 +53,5 @@ h3 {
 p {
     margin: 5px 0;
     font-size: 14px;
-}
-a {
-    margin: 5px 0;
-    font-size: 14px;
-    color: black;
 }
 </style>

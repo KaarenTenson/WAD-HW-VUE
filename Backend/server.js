@@ -125,3 +125,24 @@ app.get('/auth/logout', (req, res) => {
     console.log('delete jwt request arrived');
     res.status(202).clearCookie('jwt').json({ "Msg": "cookie cleared" }).send
 });
+app.get('/posts', (req, res) => {
+    console.log('get all posts request arrived');
+    pool.query('SELECT * FROM posts;', (err, result) => {
+        if (err) {
+            console.error(err.message);
+            return res.status(500).json({ error: 'Failed to get posts' });
+        }
+        return res.status(200).json(result);
+    })
+});
+app.delete('/DeleteAll', function (req, res) {
+    pool.query('DELETE FROM posts;', (err, result) => {
+        if (err) {
+            console.error(err.message);
+            return res.status(500).json({ error: 'Failed to delete posts' });
+        }
+
+        console.log('All posts deleted');
+        res.status(200).json({ message: 'All posts deleted successfully' });
+    });
+});

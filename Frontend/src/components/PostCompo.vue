@@ -1,5 +1,5 @@
 <template>
-    <section class="post" v-for="post in PostList" :key="post.id">
+    <section class="post" v-for="post in PostList" :key="post.id" @click="redirectToEditPost(post.id)">
       <div class="postheader">
         <img :src="resolvePicture(post.profile_picture)" alt="profile">
         <p>{{ post.date_posted }}</p>
@@ -8,7 +8,11 @@
       <p>{{ post.caption }}</p>
      
       <section class="reaktsioon">
-        <button  @click="Like(post.id)" :class="post.likes.IsLiked ? 'like_button_clicked' : 'like_button'" ></button>
+        <button 
+        @click.stop="Like(post.id)" 
+        @mouseover.stop 
+        :class="post.likes.IsLiked ? 'like_button_clicked' : 'like_button'"
+      ></button>
         <p class="reaktsioonLikeText">{{ post.likes.count }}</p>
       </section>
     </section>
@@ -38,10 +42,14 @@ resolvePicture(Picture) {
     return require(`@/assets/${Picture}`); // For static paths
   
   },
+  redirectToEditPost(postId) {
+    this.$router.push("/Login")
+      //this.$router.push(`/edit-post/${postId}`); // Navigate to the edit post page
+    },
 },
 }
 </script>
-<style>
+<style scoped>
 .post{
     border: 3px solid black;
     padding: 2%;
@@ -74,6 +82,9 @@ resolvePicture(Picture) {
     margin-left: auto;
     margin-right: auto;
     width: 50%;
+}
+.post:hover{
+  cursor: pointer;
 }
 
 .reaktsioon{

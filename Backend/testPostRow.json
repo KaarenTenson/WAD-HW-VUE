@@ -1,0 +1,10 @@
+{
+    "profile_picture": "me.png",
+    "date_posted": "19.12.2003",
+    "image": "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    "caption": "how do you like my art?",
+    "likes": {
+        "count": 5,
+        "IsLiked": false
+    }
+}

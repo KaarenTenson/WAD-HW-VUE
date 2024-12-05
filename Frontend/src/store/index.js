@@ -149,15 +149,21 @@ export default createStore({
         post.likes.count+=1;
       }
     },
-    RESET_LIKES(state){
-        state.PostList.forEach(post=>{
-        post.likes.count=0;
-        post.likes.IsLiked=false;});
-
-    },
     ADD_POST(state, newPost) {
       state.PostList.push(newPost);
     },
+    LOG_OUT(state){
+      state.isLoggedIn = false; 
+    },
+    DELETE_ALL(state){
+      state.PostList=[];
+    },
+    FETCH_POSTS(state, data){
+      console.log("posts fetched", data);
+
+      state.PostList=data.rows;
+    },
+    
   },
   actions: {
     setProfile({ commit }, profileData) {
@@ -166,10 +172,40 @@ export default createStore({
     LikeAct({ commit },  postId ) {
       commit('Like', postId );
     },
-    resetLikesAct({commit}){
-      
-      commit("RESET_LIKES");
+    LogOutAct({ commit}){
+     commit("LOG_OUT");
     },
+    async FetchPostsAct({ commit }) {
+      try {
+        const response = await fetch('http://localhost:3000/posts', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        console.log('Fetched posts:', data);
+        commit('FETCH_POSTS', data);
+      } catch (error) {
+        console.error('Fetch posts error:', error);
+      }
+    },
+    async DeleteAllAct({ commit }) {
+      await fetch('http://localhost:3000/DeleteAll', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => console.log(data)) // Success message from the server
+      .then(commit('DELETE_ALL'))
+      .catch(error => console.error('Error:', error)); // Logs any error
+       
+  },
     addPostAct({ commit, state }, {postBody, image }) {
       const newPost = {
         id: state.PostList.length,

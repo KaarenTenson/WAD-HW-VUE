@@ -4,22 +4,34 @@ import PostCompo from '@/components/PostCompo.vue';
 export default {
   name: "MainPageView",
   components: { PostCompo },
+  mounted:function(){
+        this.fetchPosts() //method1 will execute at pageload
+  },
   methods: {
-    resetLikes() {
-      console.log("yes"); 
-      this.$store.dispatch('resetLikesAct');  
-    }
+    LogOut() {
+        this.$store.dispatch("LogOutAct", { 
+        });
+        this.$router.push('/Login'); 
+        },
+    DeleteAll() {
+        this.$store.dispatch("DeleteAllAct", {
+        });
+    },
+    NewPost(){
+        this.$router.push('/new-post');
+    },
+    fetchPosts(){
+        this.$store.dispatch("FetchPostsAct", { 
+        });
+    },
   }
 };
 </script>
 
 <template>
-    <div id="profilePanel" class="profile-panel">
-        <h3>Guest</h3>
-        <p>Email: guest@example.com</p>
-        <a href="Login.html" ><strong>Logout</strong></a>
-    </div>
+ 
     <br>
+    <button @click="LogOut">Logout</button>
     <section class="box">
     <section class="vasak"><h1>adds</h1></section>
     <section class="keskmine">
@@ -28,10 +40,13 @@ export default {
     <section class="parem"><h1>more adds</h1></section>
     
     </section>
-    <button type="button" @click="resetLikes" > reset likes</button>
+    <div> 
+        <button type="button" @click="DeleteAll" > Delete All</button>
+        <button type="button" @click="NewPost" > Add post</button>
+    </div>
+   
     
 </template>
-
 <style scoped>
 button{
     padding: 10px 20px;
@@ -55,6 +70,14 @@ button:hover {
     justify-content: space-between;
     
 
+}
+div {
+    margin: 1%; /* Margin around the group */
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Align buttons vertically in the center */
+    gap: 40px; /* Adds space between buttons */
+    justify-content:  center;  /* Align buttons to the left */
 }
 .vasak{
     text-align: center;
@@ -92,38 +115,5 @@ button:hover {
     }
 
 }
-#Profile_info{ 
-    width: 50px;
-    height: 50px;
-    background-image: url("../assets/me.png");
-    background-size: cover;
-    background-position: center;
-    border-radius: 50%;
-}
-.profile-panel {
-    display: none; /* Hidden by default */
-    position: absolute;
-    top: 110px; /* Below the profile image */
-    right: 10px;
-    background-color: #f9f9f9;
-    padding: 10px;
-    border: 1px solid #ccc;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    width: 200px;
-    z-index: 1000;
-}
-.profile-panel h3 {
-    margin: 0;
-    font-size: 18px;
-}
 
-.profile-panel p {
-    margin: 5px 0;
-    font-size: 14px;
-}
-.profile-panel a {
-    margin: 5px 0;
-    font-size: 14px;
-    color: black;
-}
 </style>
