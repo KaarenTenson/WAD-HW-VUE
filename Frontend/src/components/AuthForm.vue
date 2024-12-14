@@ -47,18 +47,10 @@ export default {
       }
 
       if (this.mode === "login") {
-        const username = this.email.split("@")[0];
-        this.$store.dispatch("setProfile", {
-          name: username,
-          mail: this.email,
-        });
         console.log(`Logging in with email: ${this.email}, password: ${this.password}`);
-        this.$router.push("/about");
-      } else if (this.mode === "signup") {
-        console.log(`Signing up with email: ${this.email}, password: ${this.password}`);
 
         try {
-          const response = await fetch("http://localhost:3000/auth/signup", {
+          const response = await fetch("http://localhost:3000/auth/login", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -71,20 +63,53 @@ export default {
 
           if (response.ok) {
             const data = await response.json();
-            localStorage.setItem("jwt", data.token);
-            alert("Signup successful! Redirecting to login.");
-            this.$router.push("/login");
+            const username = this.email.split("@")[0];
+            this.$store.dispatch("setProfile", {
+              name: username,
+              mail: this.email,
+            });
+            console.log("Login successful! Redirecting to about.");
+            this.$router.push("/about");
           } else {
             const error = await response.json();
             console.error("Error:", error);
-            alert(error.error || "Signup failed");
+            alert(error.error || "Login failed");
           }
         } catch (error) {
           console.error("Error:", error);
-          alert("An error occurred during signup");
+          alert("An error occurred during login");
         }
+
+      } else if (this.mode === "signup") {
+    console.log(`Signing up with email: ${this.email}, password: ${this.password}`);
+
+    try {
+      const response = await fetch("http://localhost:3000/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: this.email,
+          password: this.password,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert("Signup successful! Redirecting to login.");
+        this.$router.push("/login");
+      } else {
+        const error = await response.json();
+        console.error("Error:", error);
+        alert(error.error || "Signup failed");
       }
-    },
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred during signup");
+    }
+  }
+},
     navigateToSignup() {
       this.$router.push("/signup");
     },
