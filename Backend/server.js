@@ -132,17 +132,30 @@ app.get('/posts', (req, res) => {
             console.error(err.message);
             return res.status(500).json({ error: 'Failed to get posts' });
         }
-        return res.status(200).json(result);
+        return res.status(200).json({message: result});
     })
+});
+app.post('/posts', (req, res) => {
+    try{
+    const {uuid, content}=req.body;
+    pool.query(
+        `INSERT INTO posts (user_id, post) VALUES ($1, $2);`,
+        [uuid, content]
+    );
+        res.status(201).send({ message: 'Posts added successfully' });
+    }catch(err){
+        res.status(401).json({ error: err });
+    }
+    
 });
 app.delete('/DeleteAll', function (req, res) {
     pool.query('DELETE FROM posts;', (err, result) => {
         if (err) {
             console.error(err.message);
-            return res.status(500).json({ error: 'Failed to delete posts' });
+            return res.status(500).json({ error: err});
         }
 
         console.log('All posts deleted');
-        res.status(200).json({ message: 'All posts deleted successfully' });
+        res.status(200).json({ message:result });
     });
 });
