@@ -34,13 +34,12 @@ const createTblQuery = `
 
 const createTblPost = `
     CREATE TABLE IF NOT EXISTS "posts" (
-        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        user_id uuid NOT NULL,
+        id SERIAL PRIMARY KEY,
+        user_id UUID NOT NULL,
         post JSON NOT NULL,
         FOREIGN KEY (user_id) REFERENCES users(id)
     );
 `;
-
 // Main function to execute everything
 async function run() {
     // Create the tables

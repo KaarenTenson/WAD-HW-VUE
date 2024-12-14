@@ -137,10 +137,10 @@ app.get('/posts', (req, res) => {
 });
 app.post('/posts', (req, res) => {
     try{
-    const {uuid, content}=req.body;
+    const {email, content}=req.body;
     pool.query(
-        `INSERT INTO posts (user_id, post) VALUES ($1, $2);`,
-        [uuid, content]
+        `INSERT INTO posts (user_id, post) VALUES ((select id from users where email = $1), $2);`,
+        [email, content]
     );
         res.status(201).send({ message: 'Posts added successfully' });
     }catch(err){
