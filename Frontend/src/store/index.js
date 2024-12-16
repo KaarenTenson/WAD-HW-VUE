@@ -162,7 +162,7 @@ export default createStore({
     FETCH_POSTS(state, data){
       console.log("posts fetched", data);
 
-      state.PostList=data.rows;
+      //state.PostList=data.rows;
     },
     
   },
@@ -220,25 +220,24 @@ export default createStore({
             content: postBody
           })
         });
-        console.log(state.profile.mail);
+        //console.log(state.profile.mail);
 
         if (!response.ok) {
           console.log(response);
         }
-        
-        const addedPost = response.json();
+        const addedPost = await response.json();
         console.log('i have gotten the response')
         console.log(addedPost)
 
         commit('ADD_POST', {
-          id: addedPost.id,
-          author_name: state.profile.name,
-          profile_picture: 'me.png',
-          date_posted: new Date().toLocaleDateString,
-          caption: postBody,
-          likes: {
-            count: 0,
-            IsLiked: false,
+          "id": addedPost.id,
+          "author_name": state.profile.name,
+          "profile_picture": 'me.png',
+          "date_posted": new Date().toLocaleDateString(),
+          "caption": postBody.caption,
+          "likes": {
+            "count": 0,
+            "IsLiked": false,
           },
         });
 

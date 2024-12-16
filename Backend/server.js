@@ -136,28 +136,38 @@ app.get('/posts', (req, res) => {
     })
 });
 app.post('/posts', async (req, res) => {
-    try{
-    const { email, content } = req.body;
-    console.log(' processing request ')
-    const result = await pool.query(
-        `INSERT INTO posts (user_id, post) VALUES ((select id from users where email = $1), $2) RETURNING id, user_id, post;`,
-        [email, content]
-    );
-    if(result ==null){
-        throw new Error('query failed')
+    try {
+        const { email, content } = req.body;
+
+        console.log('Processing request...');
+        console.log('Email:', email, 'Content:', content);
+
+        // Insert the post and fetch the inserted row
+        const result = await pool.query(
+            `INSERT INTO posts (user_id, post) 
+             VALUES ((SELECT id FROM users WHERE email = $1), $2) 
+             RETURNING id, user_id, post;`,
+            [email, content]
+        );
+
+        // Check if the query returned a result
+        if (!result.rows || result.rows.length === 0) {
+            throw new Error('Insert query failed: No rows returned');
+        }
+
+        const post = result.rows[0];
+        console.log('Post added to DB:', post);
+
+        // Send the inserted post back as JSON
+        res.status(201).json(post);
+    } catch (err) {
+        console.error('Error:', err.message);
+
+        // Send a JSON error response
+        res.status(400).json({ error: err.message });
     }
-    console.log(result.rows[0].id)
-    console.log('shit should be added to db')
-        res.status(201).json({
-            id: result.rows[0].id,
-            user_id: result.rows[0].user_id,
-            post: result.rows[0].post,
-        });
-    }catch(err){
-        res.status(401).json({ error: err });
-    }
-    
 });
+
 app.delete('/DeleteAll', function (req, res) {
     pool.query('DELETE FROM posts;', (err, result) => {
         if (err) {
