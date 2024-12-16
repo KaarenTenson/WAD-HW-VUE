@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import AddPostView from '@/views/AddPostView.vue'
 import SignupView from '@/views/SignupView.vue'
+import auth from '@/auth'
 
 const routes = [
   {
@@ -39,6 +40,20 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes
+})
+
+router.beforeEach(async (to, from, next) => {
+  if (to.path === '/' || to.path === '/login' || to.path === '/signup') {
+    return next();
+  }
+
+  const isAuthenticated = await auth.authenticated();
+
+  if (isAuthenticated) {
+    next(); 
+  } else {
+    next('/login');
+  }
 })
 
 export default router
