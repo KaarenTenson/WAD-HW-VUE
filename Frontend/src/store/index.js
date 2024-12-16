@@ -162,7 +162,7 @@ export default createStore({
     FETCH_POSTS(state, data){
       console.log("posts fetched", data);
 
-      //state.PostList=data.rows;
+      state.PostList=data;
     },
     
   },
@@ -189,7 +189,13 @@ export default createStore({
         }
         const data = await response.json();
         console.log('Fetched posts:', data);
-        commit('FETCH_POSTS', data);
+        commit('FETCH_POSTS', data.map((post) => {
+          return {
+              id: post.id,
+              ...post.post,  
+              user_id: post.user_id  
+          };
+      }));
       } catch (error) {
         console.error('Fetch posts error:', error);
       }
