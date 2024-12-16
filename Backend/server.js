@@ -135,17 +135,20 @@ app.get('/posts', (req, res) => {
         return res.status(200).json({message: result});
     })
 });
-app.post('/posts', (req, res) => {
+app.post('/posts', async (req, res) => {
     try{
-    const email = req.body[0];
-    const content = req.body[1];
+    const { email, content } = req.body;
     console.log(' processing request ')
-    const result = pool.query(
+    const result = await pool.query(
         `INSERT INTO posts (user_id, post) VALUES ((select id from users where email = $1), $2) RETURNING id, user_id, post;`,
         [email, content]
     );
+    if(result ==null){
+        throw new Error('query failed')
+    }
+    console.log(result.rows[0].id)
     console.log('shit should be added to db')
-        res.status(201).send({
+        res.status(201).json({
             id: result.rows[0].id,
             user_id: result.rows[0].user_id,
             post: result.rows[0].post,

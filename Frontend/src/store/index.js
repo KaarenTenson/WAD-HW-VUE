@@ -207,7 +207,8 @@ export default createStore({
       .catch(error => console.error('Error:', error)); // Logs any error
        
   },
-    async addPostAct({ commit, state }, {postBody}) {
+    async addPostAct({ commit, state }, postBody) {
+      console.log(postBody)
       try {
         const response = await fetch('http://localhost:3000/posts', {
           method: 'POST',
@@ -227,6 +228,7 @@ export default createStore({
         
         const addedPost = response.json();
         console.log('i have gotten the response')
+        console.log(addedPost)
 
         commit('ADD_POST', {
           id: addedPost.id,
