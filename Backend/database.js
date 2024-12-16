@@ -3,7 +3,7 @@ const fs = require('fs'); // Using fs.readFileSync for synchronous reading
 
 const pool = new Pool({
     user: "postgres",
-    password: "password", // Add your password
+    password: "rokkopeeretas2", // Add your password
     database: "postgres",
     host: "localhost",
     port: 5432

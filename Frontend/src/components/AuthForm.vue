@@ -46,74 +46,51 @@ export default {
         return;
       }
 
-      if (this.mode === "login") {
-        console.log(`Logging in with email: ${this.email}, password: ${this.password}`);
+      const url = this.mode === "login" ? "http://localhost:3000/auth/login" : "http://localhost:3000/auth/signup";
+      console.log(`${this.mode === "login" ? "Logging in" : "Signing up"} with email: ${this.email}, password: ${this.password}`);
 
-        try {
-          const response = await fetch("http://localhost:3000/auth/login", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: this.email,
-              password: this.password,
-            }),
-          });
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: this.email,
+            password: this.password,
+          }),
+          credentials: 'include',
+        });
 
-          if (response.ok) {
-            const data = await response.json();
+        if (response.ok) {
+          const data = await response.json();
+          console.log(`${this.mode === "login" ? "Login" : "Signup"} successful!`, data);
+
+          if (this.mode === "login") {
             const username = this.email.split("@")[0];
             this.$store.dispatch("setProfile", {
               name: username,
               mail: this.email,
             });
-            console.log("Login successful! Redirecting to about.");
             this.$router.push("/about");
           } else {
-            const error = await response.json();
-            console.error("Error:", error);
-            alert(error.error || "Login failed");
+            alert("Signup successful! Redirecting to login.");
+            this.$router.push("/login");
           }
-        } catch (error) {
+        } else {
+          const error = await response.json();
           console.error("Error:", error);
-          alert("An error occurred during login");
+          alert(error.error || `${this.mode === "login" ? "Login" : "Signup"} failed`);
         }
-
-      } else if (this.mode === "signup") {
-    console.log(`Signing up with email: ${this.email}, password: ${this.password}`);
-
-    try {
-      const response = await fetch("http://localhost:3000/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: this.email,
-          password: this.password,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        alert("Signup successful! Redirecting to login.");
-        this.$router.push("/login");
-      } else {
-        const error = await response.json();
+      } catch (error) {
         console.error("Error:", error);
-        alert(error.error || "Signup failed");
+        alert("An error occurred during the process");
       }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred during signup");
-    }
-  }
-},
+    },
     navigateToSignup() {
       this.$router.push("/signup");
     },
-  },
+  }
 };
 </script>
 

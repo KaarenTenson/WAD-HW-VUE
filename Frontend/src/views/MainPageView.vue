@@ -8,11 +8,24 @@ export default {
         this.fetchPosts() //method1 will execute at pageload
   },
   methods: {
-    LogOut() {
-        this.$store.dispatch("LogOutAct", { 
-        });
-        this.$router.push('/Login'); 
-        },
+    async LogOut() {
+        try {
+            const response = await fetch("http://localhost:3000/auth/logout", {
+                method: "GET",
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                console.log("Logout successful!");
+                this.$store.dispatch("LogOutAct");
+                this.$router.push('/Login');
+            } else {
+                console.error("Logout failed");
+            }
+        } catch (error) {
+            console.error("Error during logout:", error);
+        }
+    },
     DeleteAll() {
         this.$store.dispatch("DeleteAllAct", {
         });
