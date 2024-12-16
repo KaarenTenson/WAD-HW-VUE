@@ -10,7 +10,7 @@
           <label for="image">Choose an Image:</label>
           <input type="file" id="image" @change="handleFileChange" accept="image/*" />
         </div>
-        <button type="submit">Post</button>
+        <button @click="addPost">Post</button>
       </form>
     </div>
   </template>
@@ -36,21 +36,20 @@ export default {
             this.image = null;
             }
     },
-    submitPost() {
-      if (!this.postBody) {
-        alert("Post cannot be empty!");
-        return;
-      }
-      this.$store.dispatch("addPostAct", {
-        postBody: this.postBody,
-        image: null, // Currently null, will add image functionality in future
-      });
-      this.postBody = "";
-      this.image = null;
-      alert("Post added");
-    },
-  },
+    addPost() {
+      console.log('in the postform vue');
+      this.$store.dispatch('addPostAct', {
+      "profile_picture": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+      "date_posted": "20.12.2003",
+      "caption": "test",
+      "likes": {
+          "count": 7,
+          "IsLiked": false
+      }});
+    }
+  }
 };
+
 </script>
 
 <style scoped>

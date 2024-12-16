@@ -137,12 +137,19 @@ app.get('/posts', (req, res) => {
 });
 app.post('/posts', (req, res) => {
     try{
-    const {email, content}=req.body;
-    pool.query(
-        `INSERT INTO posts (user_id, post) VALUES ((select id from users where email = $1), $2);`,
+    const email = req.body[0];
+    const content = req.body[1];
+    console.log(' processing request ')
+    const result = pool.query(
+        `INSERT INTO posts (user_id, post) VALUES ((select id from users where email = $1), $2) RETURNING id, user_id, post;`,
         [email, content]
     );
-        res.status(201).send({ message: 'Posts added successfully' });
+    console.log('shit should be added to db')
+        res.status(201).send({
+            id: result.rows[0].id,
+            user_id: result.rows[0].user_id,
+            post: result.rows[0].post,
+        });
     }catch(err){
         res.status(401).json({ error: err });
     }

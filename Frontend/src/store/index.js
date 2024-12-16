@@ -150,6 +150,7 @@ export default createStore({
       }
     },
     ADD_POST(state, newPost) {
+      console.log('in the addPost', newPost)
       state.PostList.push(newPost);
     },
     LOG_OUT(state){
@@ -206,20 +207,44 @@ export default createStore({
       .catch(error => console.error('Error:', error)); // Logs any error
        
   },
-    addPostAct({ commit, state }, {postBody, image }) {
-      const newPost = {
-        id: state.PostList.length,
-        author_name: state.isLoggedIn ? state.name : "Guest",
-        profile_picture : "me.png",
-        date_posted: new Date().toLocaleDateString(),
-        caption: postBody,
-        image: image || null,
-        likes: {
-          count: 0,
-          IsLiked: false,
-        },
-      };
-      commit("ADD_POST", newPost);
+    async addPostAct({ commit, state }, {postBody}) {
+      try {
+        const response = await fetch('http://localhost:3000/posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: state.profile.mail,
+            content: postBody
+          })
+        });
+        console.log(state.profile.mail);
+
+        if (!response.ok) {
+          console.log(response);
+        }
+        
+        const addedPost = response.json();
+        console.log('i have gotten the response')
+
+        commit('ADD_POST', {
+          id: addedPost.id,
+          author_name: state.profile.name,
+          profile_picture: 'me.png',
+          date_posted: new Date().toLocaleDateString,
+          caption: postBody,
+          likes: {
+            count: 0,
+            IsLiked: false,
+          },
+        });
+
+        console.log('Post added:', addedPost);
+      } catch (error) {
+        console.error('Error:', error);
+        throw error;
+      }
     }
   },
   modules: {
