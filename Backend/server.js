@@ -225,19 +225,19 @@ app.delete('/posts/:id', async (req, res) => {
 });*/
 
 app.put('/posts/:id', async (req, res) => {
-    const { email } = req.body; // Expect caption from the request body
+    const { post } = req.body; // Expect caption from the request body
     const { id } = req.params;    // Get id from the URL parameters
 
     // Validation: Check if caption is provided
-    if (!email) {
-        return res.status(400).json({ error: 'Caption is required' });
+    if (!post) {
+        return res.status(400).json({ error: 'post is required' });
     }
 
     try {
         // Update the post with the new caption
         const result = await pool.query(
             'UPDATE posts SET post = $1 WHERE id = $2 RETURNING *;',
-            [email, id]
+            [post, id]
         );
 
         // Check if any rows were updated
@@ -246,7 +246,9 @@ app.put('/posts/:id', async (req, res) => {
         }
 
         // Send the updated post as the response
+        
         console.log('Post updated successfully');
+        console.log(result.rows[0])
         res.status(200).json(result.rows[0]);
     } catch (err) {
         console.error('Error updating post:', err.message);

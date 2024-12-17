@@ -6,7 +6,6 @@ export default createStore({
       name: "Guest",
       mail: "guest@example.com",
     },
-    isLoggedIn:false,
     mail:"",
     name:"",
     PostList:[  {
@@ -21,105 +20,7 @@ export default createStore({
           "IsLiked": false
       }
   },
-  {
-      "id":1,
-      "author_name": "John Doe",
-      "profile_picture": "me.png",
-      "date_posted": "19.12.2003",
-      "caption": "not bad",
-      "likes": {
-          "count": 1,
-          "IsLiked": false
-      }
-  },
-  {
-      "id":2,
-      "author_name": "Roger Parks",
-      "profile_picture": "me.png",
-      "date_posted": "19.12.2003",
-      "caption": "looks good:)",
-      "likes": {
-          "count": 2,
-          "IsLiked": false
-      }
-  },
-  {
-      "id":3,
-      "author_name": "Sarah Mitchell",
-      "profile_picture": "me.png",
-      "date_posted": "19.12.2003",
-      "caption": "i like it",
-      "likes": {
-          "count": 1,
-          "IsLiked": false
-      }
-  },
-  {
-      "id":4,
-      "author_name": "Ethan Parker",
-      "profile_picture": "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
-      "date_posted": "20.12.2003",
-      "caption": "i dont know man",
-      "likes": {
-          "count": 1,
-          "IsLiked": false
-      }
-  },
-  {
-      "id":5,
-      "author_name": "Mia Thompson",
-      "profile_picture": "me.png",
-      "date_posted": "20.12.2003",
-      "caption": "could be worse",
-      "likes": {
-          "count": 3,
-          "IsLiked": false
-      }
-  },
-  {
-      "id":6,
-      "author_name": "Lucas Johnson",
-      "profile_picture": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-      "date_posted": "20.12.2003",
-      "caption": "pretty nifty ngl",
-      "likes": {
-          "count": 7,
-          "IsLiked": false
-      }
-  },
-  {
-      "id":7,
-      "author_name": "Ava Davis",
-      "profile_picture": "me.png",
-      "date_posted": "20.12.2003",
-      "caption": "awesomesauce",
-      "likes": {
-          "count": 2,
-          "IsLiked": false
-      }
-  },
-  {
-      "id":8,
-      "author_name": "Noah Wilson",
-      "profile_picture": "https://cdn.vectorstock.com/i/1000v/20/74/woman-avatar-profile-vector-21372074.jpg",
-      "date_posted": "20.12.2003",
-      "caption": "yeah sure",
-      "likes": {
-          "count": 1,
-          "IsLiked": false
-      }
-  },
-  {
-      "id":9,
-      "author_name": "Isabella Garcia",
-      "profile_picture": "me.png",
-      "date_posted": "20.12.2003",
-      "caption": "pretty good",
-      "likes": {
-          "count": 3,
-          "IsLiked": false
-      }
-  }
+  
 
     ]
   },
@@ -149,12 +50,16 @@ export default createStore({
         post.likes.count+=1;
       }
     },
+    LOG_OUT(state){
+      state.profile={
+        name: "Guest",
+        mail: "guest@example.com",
+      }
+      
+    },
     ADD_POST(state, newPost) {
       console.log('in the addPost', newPost)
       state.PostList.push(newPost);
-    },
-    LOG_OUT(state){
-      state.isLoggedIn = false; 
     },
     DELETE_ALL(state){
       state.PostList=[];
@@ -169,25 +74,23 @@ export default createStore({
 
       state.PostList.find(post);
     }    ,
-    UPDATE_POST(state, {postId, caption}) {
-      const postIndex = state.PostList.findIndex(post => post.id === postId);
-      if (postIndex !== -1) {
-        state.PostList[postIndex] = {
-          ...state.PostList[postIndex],
-          caption
-        };
+    UPDATE_POST(state, {post, Postid}) {
+      const postIndex = state.PostList.findIndex(post1 => post1.id === Postid);
+     state.PostList[postIndex]={
+      id: Postid,
+      ...post,  
       }
     }
   },
   actions: {
+    LogOutAct({commit}){
+      commit("LOG_OUT")
+    },
     setProfile({ commit }, profileData) {
       commit("updateProfile", profileData);
     },
     LikeAct({ commit },  postId ) {
       commit('Like', postId );
-    },
-    LogOutAct({ commit}){
-     commit("LOG_OUT");
     },
     async FetchPostsAct({ commit }) {
       try {
@@ -206,7 +109,6 @@ export default createStore({
           return {
               id: post.id,
               ...post.post,  
-              user_id: post.user_id  
           };
       }));
       } catch (error) {
@@ -293,15 +195,15 @@ export default createStore({
             
           },
           body: JSON.stringify({
-            email: post,
+            post: post,
           }),
         });
-        /**if (!response.ok) {
+        if (!response.ok) {
           throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
         const data = await response.json();
-        console.log('Ready to update posts:', data);
-        commit('UPDATE_POST', id, caption, data); **/
+        console.log('Ready to update posts:', data.post, data.id);
+        commit('UPDATE_POST', data.post, data.id); 
       } catch (err) {
         console.log(err)
       }

@@ -39,6 +39,7 @@ export default {
     addPost() {
       console.log('in the postform vue');
       this.$store.dispatch('addPostAct', {
+      "author_name": this.$store.state.profile.name,
       "profile_picture": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
       "date_posted": new Date().toLocaleDateString(),
       "caption": this.postBody,
