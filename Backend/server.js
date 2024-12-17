@@ -199,7 +199,7 @@ app.delete('/posts/:id', async (req, res) => {
 
         // Send the updated post as the response
         console.log('Post updated successfully');
-        res.status(200).json(result.rows[0]);
+        res.status(200).json({message: "successfull delete"});
     } catch (err) {
         console.error('Error updating post:', err.message);
         res.status(500).json({ error: 'Failed to update post' });

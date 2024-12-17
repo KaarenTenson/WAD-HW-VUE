@@ -12,9 +12,9 @@ const toggleProfile = () => {
 <template>
 <header>
   <div>
-  <strong><router-link to="/about"> Home </router-link></strong>
+  <strong><router-link to="/"> Home </router-link></strong>
   <strong><router-link to="/new-post">| New Post </router-link></strong>
-  <strong><router-link to="/">| About us </router-link></strong>
+  <strong><router-link to="/about">| About us </router-link></strong>
   </div>
   <div>
     <button id="Profile_info" type="button" @click="toggleProfile"></button>

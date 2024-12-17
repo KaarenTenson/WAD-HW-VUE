@@ -227,6 +227,7 @@ export default createStore({
        
   },
   async DeleteAct({ }, id) {
+    console.log(id);
     await fetch(`http://localhost:3000/posts/${id}`, {
       method: 'DELETE',
       headers: {

@@ -47,6 +47,7 @@ export default {
           "IsLiked": false
       }});
       this.postBody = '';
+      this.$router.push("/");
     }
   }
 };
