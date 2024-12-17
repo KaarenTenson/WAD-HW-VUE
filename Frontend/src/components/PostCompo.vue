@@ -43,8 +43,9 @@ resolvePicture(Picture) {
   
   },
   redirectToEditPost(postId) {
-    this.$router.push("/Login")
-      //this.$router.push(`/edit-post/${postId}`); // Navigate to the edit post page
+    //this.$router.push("/Login")
+      this.$router.push(`/edit-post/${postId}`);
+      console.log('post nr', postId)
     },
 },
 }

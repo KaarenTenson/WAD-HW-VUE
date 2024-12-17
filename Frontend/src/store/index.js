@@ -164,7 +164,20 @@ export default createStore({
 
       state.PostList=data;
     },
-    
+    FETCH_POST(state, post) {
+      console.log('fetched post', post);
+
+      state.PostList.find(post);
+    }    ,
+    UPDATE_POST(state, {postId, caption}) {
+      const postIndex = state.PostList.findIndex(post => post.id === postId);
+      if (postIndex !== -1) {
+        state.PostList[postIndex] = {
+          ...state.PostList[postIndex],
+          caption
+        };
+      }
+    }
   },
   actions: {
     setProfile({ commit }, profileData) {
@@ -251,6 +264,40 @@ export default createStore({
       } catch (error) {
         console.error('Error:', error);
         throw error;
+      }
+    },
+    async editPostAct({commit}) {
+      console.log(postId);
+      const response = await fetch('http://localhost:3000/posts', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+      if (!response.ok) {
+        console.log('issues getting post')
+      }
+      console.log('found a post')
+
+      const posts = await response.json;
+      return posts;
+    },
+    async updatePost({commit, state}, {id, caption}) {
+      try {
+        const response = await fetch('http://localhost:3000/posts', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        console.log('Ready to update posts:', data);
+        commit('UPDATE_POST', id, caption, data);
+      } catch (err) {
+        console.log(err)
       }
     }
   },

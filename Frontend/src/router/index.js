@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import AddPostView from '@/views/AddPostView.vue'
 import SignupView from '@/views/SignupView.vue'
+import EditPostView from '@/views/EditPostView.vue'
 import auth from '@/auth'
 
 const routes = [
@@ -34,6 +35,11 @@ const routes = [
     path: '/signup',
     name: 'Signup',
     component: SignupView
+  },
+  {
+    path: '/edit-post/:postId',
+    name: 'EditPost',
+    component: EditPostView
   }
 ]
 

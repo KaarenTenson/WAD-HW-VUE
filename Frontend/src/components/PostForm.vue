@@ -40,12 +40,13 @@ export default {
       console.log('in the postform vue');
       this.$store.dispatch('addPostAct', {
       "profile_picture": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-      "date_posted": "20.12.2003",
-      "caption": "test",
+      "date_posted": new Date().toLocaleDateString(),
+      "caption": this.postBody,
       "likes": {
-          "count": 7,
+          "count": 0,
           "IsLiked": false
       }});
+      this.postBody = '';
     }
   }
 };

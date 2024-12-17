@@ -182,3 +182,42 @@ app.delete('/DeleteAll', function (req, res) {
         res.status(200).json({ message:result });
     });
 });
+/*app.get('/posts/:id', async (req, res) => {
+    const id = req.params;
+    console.log('this is the id in server', id);
+
+    try {
+        const post = await pool.query(
+            'SELECT * from POSTS WHERE posts.id = $1', [id]
+        )
+        if (!post) {
+            console.log('im here')
+            return res.status(404).send('Post not found');
+        }
+        res.status(200).json(post);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error fetching post');
+    }
+});*/
+
+/*app.put('posts/:id', async (req, res) => {
+    const postId = req.params.id;
+    const {caption} = req.body;
+
+    if (!caption) {
+        return res.status(400).json({error: 'Caption is required' });
+    }
+
+    try {
+        const newPost = await pool.query(
+            'UPDATE posts SET post = JSONB_SET(post, "{caption}", $1::jsonb WHERE id = $2 RETURNING id, post', [JSON.stringify(caption), postId]
+        );
+        if (result.rows === 0) {
+            return res.status(404).json({error: 'Post not found'})
+        }
+        res.status(200).json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({error: 'Failed to update post'})
+    }
+})*/
