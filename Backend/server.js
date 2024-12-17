@@ -201,23 +201,32 @@ app.delete('/DeleteAll', function (req, res) {
     }
 });*/
 
-/*app.put('posts/:id', async (req, res) => {
-    const postId = req.params.id;
-    const {caption} = req.body;
+app.put('/posts/:id', async (req, res) => {
+    const { email } = req.body; // Expect caption from the request body
+    const { id } = req.params;    // Get id from the URL parameters
 
-    if (!caption) {
-        return res.status(400).json({error: 'Caption is required' });
+    // Validation: Check if caption is provided
+    if (!email) {
+        return res.status(400).json({ error: 'Caption is required' });
     }
 
     try {
-        const newPost = await pool.query(
-            'UPDATE posts SET post = JSONB_SET(post, "{caption}", $1::jsonb WHERE id = $2 RETURNING id, post', [JSON.stringify(caption), postId]
+        // Update the post with the new caption
+        const result = await pool.query(
+            'UPDATE posts SET caption = $1 WHERE id = $2 RETURNING *;',
+            [email, id]
         );
-        if (result.rows === 0) {
-            return res.status(404).json({error: 'Post not found'})
+
+        // Check if any rows were updated
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Post not found' });
         }
+
+        // Send the updated post as the response
+        console.log('Post updated successfully');
         res.status(200).json(result.rows[0]);
     } catch (err) {
-        res.status(500).json({error: 'Failed to update post'})
+        console.error('Error updating post:', err.message);
+        res.status(500).json({ error: 'Failed to update post' });
     }
-})*/
+});

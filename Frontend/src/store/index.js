@@ -282,20 +282,28 @@ export default createStore({
       const posts = await response.json;
       return posts;
     },
-    async updatePost({commit, state}, {id, caption}) {
+    async updatePost({commit, state}, {id, caption}) 
+
+    {
+      let post=state.PostList.find(post1 => post1.id === id);
+      post.caption=caption
       try {
-        const response = await fetch('http://localhost:3000/posts', {
-          method: 'GET',
+        const response = await fetch(`http://localhost:3000/posts/${id}`, {
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            
           },
+          body: JSON.stringify({
+            email: post,
+          }),
         });
-        if (!response.ok) {
+        /**if (!response.ok) {
           throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
         const data = await response.json();
         console.log('Ready to update posts:', data);
-        commit('UPDATE_POST', id, caption, data);
+        commit('UPDATE_POST', id, caption, data); **/
       } catch (err) {
         console.log(err)
       }
