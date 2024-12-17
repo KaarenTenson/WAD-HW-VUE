@@ -33,7 +33,18 @@
     updatePost() {
         const updatedCaption = this.newBody
         this.$store
-          .dispatch("updatePost", { id: this.post.id, caption: updatedCaption })
+          .dispatch("updatePost", { id: this.post.id, post: {
+              "id": this.post.id,
+              "author_name": this.post.author_name,
+              "profile_picture": this.post.profile_picture,
+              "date_posted": this.post.date_posted,
+              "caption": updatedCaption,
+              "likes": {
+                "count": this.post.likes.count,
+                "IsLiked": this.post.likes.IsLiked,
+              },
+        } 
+      })
           .then(() => {
             alert("Post updated successfully!");
             this.post.caption = updatedCaption;
@@ -41,7 +52,7 @@
     },
     deletePost() {
       if (confirm("Are you sure you want to delete this post?")) {
-        this.$store.dispatch("deletePost", this.post.id).then(() => {
+        this.$store.dispatch("DeleteAct", this.post.id).then(() => {
           alert("Post deleted successfully!");
           this.$router.push("/");
         });

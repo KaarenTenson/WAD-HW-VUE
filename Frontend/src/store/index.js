@@ -214,7 +214,7 @@ export default createStore({
       }
     },
     async DeleteAllAct({ commit }) {
-      await fetch('http://localhost:3000/DeleteAll', {
+      await fetch('http://localhost:3000/posts/DeleteAll', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -226,7 +226,19 @@ export default createStore({
       .catch(error => console.error('Error:', error)); // Logs any error
        
   },
-    async addPostAct({ commit, state }, postBody) {
+  async DeleteAct({ }, id) {
+    await fetch(`http://localhost:3000/posts/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => console.log(data)) // Success message from the server
+    .catch(error => console.error('Error:', error)); // Logs any error
+     
+},
+    async addPostAct({ state }, postBody) {
       console.log(postBody)
       try {
         const response = await fetch('http://localhost:3000/posts', {
@@ -248,26 +260,13 @@ export default createStore({
         console.log('i have gotten the response')
         console.log(addedPost)
 
-        commit('ADD_POST', {
-          "id": addedPost.id,
-          "author_name": state.profile.name,
-          "profile_picture": 'me.png',
-          "date_posted": new Date().toLocaleDateString(),
-          "caption": postBody.caption,
-          "likes": {
-            "count": 0,
-            "IsLiked": false,
-          },
-        });
-
         console.log('Post added:', addedPost);
       } catch (error) {
         console.error('Error:', error);
         throw error;
       }
     },
-    async editPostAct({commit}) {
-      console.log(postId);
+    async editPostAct({commit},id, post) {
       const response = await fetch('http://localhost:3000/posts', {
         method: 'GET',
         headers: {
@@ -282,11 +281,9 @@ export default createStore({
       const posts = await response.json;
       return posts;
     },
-    async updatePost({commit, state}, {id, caption}) 
+    async updatePost({commit, state}, {id, post}) 
 
     {
-      let post=state.PostList.find(post1 => post1.id === id);
-      post.caption=caption
       try {
         const response = await fetch(`http://localhost:3000/posts/${id}`, {
           method: 'PUT',

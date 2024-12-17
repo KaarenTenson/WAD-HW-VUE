@@ -171,7 +171,7 @@ app.post('/posts', async (req, res) => {
     }
 });
 
-app.delete('/DeleteAll', function (req, res) {
+app.delete('/posts/DeleteAll', function (req, res) {
     pool.query('DELETE FROM posts;', (err, result) => {
         if (err) {
             console.error(err.message);
@@ -181,6 +181,29 @@ app.delete('/DeleteAll', function (req, res) {
         console.log('All posts deleted');
         res.status(200).json({ message:result });
     });
+});
+app.delete('/posts/:id', async (req, res) => {
+    const { id } = req.params;    
+
+    try {
+        // Udelete post
+        const result = await pool.query(
+            `delete from posts where id = $1;`,
+            [id]
+        );
+
+        // Check if any rows were deleted
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Post not found' });
+        }
+
+        // Send the updated post as the response
+        console.log('Post updated successfully');
+        res.status(200).json(result.rows[0]);
+    } catch (err) {
+        console.error('Error updating post:', err.message);
+        res.status(500).json({ error: 'Failed to update post' });
+    }
 });
 /*app.get('/posts/:id', async (req, res) => {
     const id = req.params;
@@ -213,7 +236,7 @@ app.put('/posts/:id', async (req, res) => {
     try {
         // Update the post with the new caption
         const result = await pool.query(
-            'UPDATE posts SET caption = $1 WHERE id = $2 RETURNING *;',
+            'UPDATE posts SET post = $1 WHERE id = $2 RETURNING *;',
             [email, id]
         );
 
